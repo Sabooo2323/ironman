@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STARK INDUSTRIES — SECURE ACCESS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;700&family=Cinzel:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Teachable Machine (Pose) dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
+</head>
+<body class="page-locked">
+
+  <!-- Atmospheric overlays -->
+  <div class="bg-image" aria-hidden="true"></div>
+  <div class="bg-tint" aria-hidden="true"></div>
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- HUD corner brackets -->
+  <div class="hud-bracket hud-tl" aria-hidden="true"></div>
+  <div class="hud-bracket hud-tr" aria-hidden="true"></div>
+  <div class="hud-bracket hud-bl" aria-hidden="true"></div>
+  <div class="hud-bracket hud-br" aria-hidden="true"></div>
+
+  <!-- Top status bar -->
+  <header class="status-bar">
+    <div class="status-left">
+      <span class="logo-mark">S.I.</span>
+      <span class="status-divider">//</span>
+      <span class="status-text">STARK INDUSTRIES MAINFRAME</span>
+    </div>
+    <div class="status-right">
+      <span class="status-dot"></span>
+      <span id="status-label">SYSTEM LOCKED</span>
+      <span class="status-divider">//</span>
+      <span id="clock">--:--:--</span>
+    </div>
+  </header>
+
+  <!-- Main composition -->
+  <main class="stage">
+
+    <!-- LEFT — Identity / Riddle -->
+    <section class="panel panel-left">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        AUTHORIZATION REQUIRED
+      </div>
+
+      <h1 class="title">
+        <span class="title-line title-line-1">STARK</span>
+        <span class="title-line title-line-2">INDUSTRIES</span>
+        <span class="title-sub">SECURE ACCESS TERMINAL — TIER&nbsp;01</span>
+      </h1>
+
+      <div class="riddle-card" id="riddle-card">
+        <div class="riddle-head">
+          <span class="riddle-tag">CLUE</span>
+          <span class="riddle-index"><span id="clue-index">01</span> / 03</span>
+        </div>
+        <p class="riddle-text" id="riddle-text">
+          “Not every hero wears the suit first. Raise the weapon that needs no bullets.”
+        </p>
+        <button class="next-clue" id="next-clue-btn">
+          <span>NEXT CLUE</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M13 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-block">
+          <span class="meta-label">PROTOCOL</span>
+          <span class="meta-value">REPULSOR&nbsp;AUTH</span>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">ATTEMPTS</span>
+          <span class="meta-value" id="attempts">UNLIMITED</span>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">BIOMETRIC</span>
+          <span class="meta-value">POSE&nbsp;NET</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT — Webcam scanner -->
+    <section class="panel panel-right">
+      <div class="scanner-frame">
+        <div class="scanner-head">
+          <span class="scanner-title">REPULSOR SCAN</span>
+          <span class="scanner-id">CAM_00<span class="blink">_</span></span>
+        </div>
+
+        <div class="scanner-screen" id="scanner-screen">
+          <!-- Webcam canvas gets injected here by JS -->
+          <div class="scanner-placeholder" id="scanner-placeholder">
+            <div class="reticle">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <p class="placeholder-text">CAMERA OFFLINE</p>
+            <button class="start-btn" id="start-btn">INITIALIZE SCAN</button>
+          </div>
+          <div class="scan-sweep" aria-hidden="true"></div>
+        </div>
+
+        <div class="scanner-readout">
+          <div class="readout-row">
+            <span class="readout-label">TARGET POSE</span>
+            <div class="readout-bar">
+              <div class="readout-bar-fill" id="target-bar"></div>
+            </div>
+            <span class="readout-pct" id="target-pct">0%</span>
+          </div>
+          <div class="readout-row">
+            <span class="readout-label">NEUTRAL</span>
+            <div class="readout-bar readout-bar-alt">
+              <div class="readout-bar-fill" id="neutral-bar"></div>
+            </div>
+            <span class="readout-pct" id="neutral-pct">0%</span>
+          </div>
+          <p class="readout-hint" id="readout-hint">Awaiting input. Hold the pose for <strong>1.5s</strong> to authenticate.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom telemetry -->
+  <footer class="telemetry">
+    <span>ENC_AES_256</span>
+    <span class="t-sep">·</span>
+    <span>NODE / MALIBU.01</span>
+    <span class="t-sep">·</span>
+    <span>J.A.R.V.I.S. STANDBY</span>
+    <span class="t-sep">·</span>
+    <span>© STARK INDUSTRIES</span>
+  </footer>
+
+  <!-- ACCESS GRANTED overlay -->
+  <div class="granted-overlay" id="granted-overlay">
+    <div class="granted-inner">
+      <div class="granted-ring"></div>
+      <div class="granted-ring granted-ring-2"></div>
+      <div class="granted-core"></div>
+      <h2 class="granted-text">ACCESS GRANTED</h2>
+      <p class="granted-sub">Identity confirmed · Welcome, Mr. Stark</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
